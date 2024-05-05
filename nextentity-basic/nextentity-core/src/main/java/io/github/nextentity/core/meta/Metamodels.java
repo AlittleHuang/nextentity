@@ -1,11 +1,11 @@
 package io.github.nextentity.core.meta;
 
-import io.github.nextentity.core.BasicExpressions;
-import io.github.nextentity.core.api.expression.EntityPath;
-import io.github.nextentity.core.reflect.InstanceFactories.ObjectFactoryImpl;
+import io.github.nextentity.core.expression.EntityPath;
+import io.github.nextentity.core.expression.impl.ExpressionImpls;
 import io.github.nextentity.core.reflect.InstanceFactories.AttributeFactoryImpl;
-import io.github.nextentity.core.reflect.InstanceFactories.ProjectionObjectAttributeFactory;
+import io.github.nextentity.core.reflect.InstanceFactories.ObjectFactoryImpl;
 import io.github.nextentity.core.reflect.InstanceFactories.ProjectionAttributeFactory;
+import io.github.nextentity.core.reflect.InstanceFactories.ProjectionObjectAttributeFactory;
 import io.github.nextentity.core.reflect.schema.Attribute;
 import io.github.nextentity.core.reflect.schema.InstanceFactory;
 import io.github.nextentity.core.reflect.schema.InstanceFactory.AttributeFactory;
@@ -79,7 +79,7 @@ public class Metamodels {
             List<String> paths = referencedAttributes.stream()
                     .map(BasicAttribute::name)
                     .collect(ImmutableList.collector(referencedAttributes.size()));
-            this.path = BasicExpressions.column(paths);
+            this.path = ExpressionImpls.column(paths);
         }
 
         public void databaseType(DatabaseType converter) {

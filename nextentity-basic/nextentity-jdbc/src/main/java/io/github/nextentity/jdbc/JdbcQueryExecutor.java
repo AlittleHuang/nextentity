@@ -1,11 +1,11 @@
 package io.github.nextentity.jdbc;
 
+import io.github.nextentity.api.model.LockModeType;
 import io.github.nextentity.core.QueryExecutor;
 import io.github.nextentity.core.SqlLogger;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.expression.QueryStructure;
 import io.github.nextentity.core.exception.TransactionRequiredException;
 import io.github.nextentity.core.exception.UncheckedSQLException;
+import io.github.nextentity.core.expression.QueryStructure;
 import io.github.nextentity.core.meta.Metamodel;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -60,11 +60,6 @@ public class JdbcQueryExecutor implements QueryExecutor {
         } catch (SQLException e) {
             throw new UncheckedSQLException(e);
         }
-    }
-
-    @Override
-    public Metamodel metamodel() {
-        return metamodel;
     }
 
     private static void printSql(QuerySqlStatement sql) {

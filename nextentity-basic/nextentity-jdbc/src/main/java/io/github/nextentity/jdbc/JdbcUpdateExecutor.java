@@ -1,7 +1,7 @@
 package io.github.nextentity.jdbc;
 
 import io.github.nextentity.core.SqlLogger;
-import io.github.nextentity.core.Updaters.UpdateExecutor;
+import io.github.nextentity.core.UpdateExecutor;
 import io.github.nextentity.core.exception.OptimisticLockException;
 import io.github.nextentity.core.exception.TransactionRequiredException;
 import io.github.nextentity.core.exception.UncheckedSQLException;
