@@ -1,19 +1,19 @@
 package io.github.nextentity.test;
 
-import io.github.nextentity.core.Expressions;
+import io.github.nextentity.api.Collector;
+import io.github.nextentity.api.ExpressionsBuilder;
+import io.github.nextentity.api.OrderBy;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.TypedExpression;
+import io.github.nextentity.api.TypedExpression.Predicate;
+import io.github.nextentity.api.Where;
+import io.github.nextentity.api.model.EntityRoot;
+import io.github.nextentity.api.model.LockModeType;
+import io.github.nextentity.api.model.Slice;
+import io.github.nextentity.api.model.Tuple;
+import io.github.nextentity.api.model.Tuple2;
 import io.github.nextentity.core.Tuples;
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression;
-import io.github.nextentity.core.api.Expression.Predicate;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Query;
-import io.github.nextentity.core.api.Query.ExpressionsBuilder;
-import io.github.nextentity.core.api.Query.OrderBy;
-import io.github.nextentity.core.api.Query.Where;
-import io.github.nextentity.core.api.Slice;
-import io.github.nextentity.core.api.tuple.Tuple;
-import io.github.nextentity.core.api.tuple.Tuple2;
+import io.github.nextentity.core.expression.Expressions;
 import io.github.nextentity.core.util.ImmutableList;
 import io.github.nextentity.core.util.Paths;
 import io.github.nextentity.test.db.UserRepository;
@@ -1238,8 +1238,8 @@ class QueryBuilderTest {
             collector = check.collector.where(get(User::getRandomNumber).in(values));
             result.add(new Checker<>(users, collector));
 
-            List<Expression<User, Integer>> collect = values.stream()
-                    .<Expression<User, Integer>>map(Expressions::of)
+            List<TypedExpression<User, Integer>> collect = values.stream()
+                    .<TypedExpression<User, Integer>>map(Expressions::of)
                     .collect(Collectors.toList());
             collector = check.collector.where(User::getRandomNumber).in(collect);
             result.add(new Checker<>(users, collector));
@@ -1549,7 +1549,7 @@ class QueryBuilderTest {
         return result;
     }
 
-    private static <T, U extends Query.Collector<T>> void addTestCaseAndCheck(List<Checker<T, U>> result, Checker<T, U> checker) {
+    private static <T, U extends Collector<T>> void addTestCaseAndCheck(List<Checker<T, U>> result, Checker<T, U> checker) {
         result.add(checker);
     }
 
@@ -1678,7 +1678,7 @@ class QueryBuilderTest {
         }
     }
 
-    static class Checker<T, U extends Query.Collector<T>> {
+    static class Checker<T, U extends Collector<T>> {
         List<T> expected;
 
         U collector;
