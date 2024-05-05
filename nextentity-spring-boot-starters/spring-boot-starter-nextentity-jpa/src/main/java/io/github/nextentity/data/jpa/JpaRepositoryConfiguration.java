@@ -2,7 +2,7 @@ package io.github.nextentity.data.jpa;
 
 import io.github.nextentity.core.Persistable;
 import io.github.nextentity.core.QueryPostProcessor;
-import io.github.nextentity.core.Repository;
+import io.github.nextentity.api.Repository;
 import io.github.nextentity.core.RepositoryFactory;
 import io.github.nextentity.core.Updaters.UpdateExecutor;
 import io.github.nextentity.core.meta.Metamodel;

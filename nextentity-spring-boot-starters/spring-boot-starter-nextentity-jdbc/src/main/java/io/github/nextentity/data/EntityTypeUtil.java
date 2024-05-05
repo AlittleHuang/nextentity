@@ -1,9 +1,9 @@
 package io.github.nextentity.data;
 
-import io.github.nextentity.core.Repository;
+import io.github.nextentity.api.Repository;
 import io.github.nextentity.core.TypeCastUtil;
-import io.github.nextentity.core.api.Query.Select;
-import io.github.nextentity.core.api.Update;
+import io.github.nextentity.api.Query.Select;
+import io.github.nextentity.api.Update;
 import io.github.nextentity.core.meta.Metamodel;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.config.DependencyDescriptor;

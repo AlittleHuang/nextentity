@@ -1,15 +1,15 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.api.tuple.Tuple;
-import io.github.nextentity.core.api.tuple.Tuple10;
-import io.github.nextentity.core.api.tuple.Tuple2;
-import io.github.nextentity.core.api.tuple.Tuple3;
-import io.github.nextentity.core.api.tuple.Tuple4;
-import io.github.nextentity.core.api.tuple.Tuple5;
-import io.github.nextentity.core.api.tuple.Tuple6;
-import io.github.nextentity.core.api.tuple.Tuple7;
-import io.github.nextentity.core.api.tuple.Tuple8;
-import io.github.nextentity.core.api.tuple.Tuple9;
+import io.github.nextentity.api.tuple.Tuple;
+import io.github.nextentity.api.tuple.Tuple10;
+import io.github.nextentity.api.tuple.Tuple2;
+import io.github.nextentity.api.tuple.Tuple3;
+import io.github.nextentity.api.tuple.Tuple4;
+import io.github.nextentity.api.tuple.Tuple5;
+import io.github.nextentity.api.tuple.Tuple6;
+import io.github.nextentity.api.tuple.Tuple7;
+import io.github.nextentity.api.tuple.Tuple8;
+import io.github.nextentity.api.tuple.Tuple9;
 import io.github.nextentity.core.util.ImmutableList;
 import io.github.nextentity.core.util.Iterators;
 import org.jetbrains.annotations.NotNull;

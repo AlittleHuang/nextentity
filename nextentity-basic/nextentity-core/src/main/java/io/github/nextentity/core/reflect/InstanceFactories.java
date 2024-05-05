@@ -1,9 +1,9 @@
 package io.github.nextentity.core.reflect;
 
 import io.github.nextentity.core.Tuples;
-import io.github.nextentity.core.api.expression.BaseExpression;
-import io.github.nextentity.core.api.expression.EntityPath;
-import io.github.nextentity.core.api.tuple.Tuple;
+import io.github.nextentity.api.Expression;
+import io.github.nextentity.core.expression.EntityPath;
+import io.github.nextentity.api.tuple.Tuple;
 import io.github.nextentity.core.exception.UncheckedReflectiveException;
 import io.github.nextentity.core.meta.BasicAttribute;
 import io.github.nextentity.core.meta.EntitySchema;
@@ -348,16 +348,16 @@ public class InstanceFactories {
 
     public static class PrimitiveFactoryImpl implements PrimitiveFactory {
         private final ImmutableList<? extends PrimitiveFactory> primitives = ImmutableList.of(this);
-        private final BaseExpression expression;
+        private final Expression expression;
         private final Class<?> type;
 
-        public PrimitiveFactoryImpl(BaseExpression expression, Class<?> type) {
+        public PrimitiveFactoryImpl(Expression expression, Class<?> type) {
             this.expression = expression;
             this.type = type;
         }
 
         @Override
-        public BaseExpression expression() {
+        public Expression expression() {
             return expression;
         }
 
@@ -446,7 +446,7 @@ public class InstanceFactories {
         }
 
         @Override
-        public BaseExpression expression() {
+        public Expression expression() {
             return attribute.entityAttribute().path();
         }
 

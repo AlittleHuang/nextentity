@@ -1,42 +1,43 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression;
-import io.github.nextentity.core.api.Expression.BooleanPathExpression;
-import io.github.nextentity.core.api.Expression.EntityPathExpression;
-import io.github.nextentity.core.api.Expression.NumberPathExpression;
-import io.github.nextentity.core.api.Expression.PathExpression;
-import io.github.nextentity.core.api.Expression.StringPathExpression;
-import io.github.nextentity.core.api.ExpressionBuilder.NumberOperator;
-import io.github.nextentity.core.api.ExpressionBuilder.PathOperator;
-import io.github.nextentity.core.api.ExpressionBuilder.StringOperator;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.Order;
-import io.github.nextentity.core.api.Page;
-import io.github.nextentity.core.api.Pageable;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Path.BooleanPath;
-import io.github.nextentity.core.api.Path.NumberPath;
-import io.github.nextentity.core.api.Path.StringPath;
-import io.github.nextentity.core.api.Query.Collector;
-import io.github.nextentity.core.api.Query.ExpressionsBuilder;
-import io.github.nextentity.core.api.Query.OrderOperator;
-import io.github.nextentity.core.api.Query.PredicateBuilder;
-import io.github.nextentity.core.api.Query.SubQueryBuilder;
-import io.github.nextentity.core.api.Query.Where;
-import io.github.nextentity.core.api.Query.Where0;
-import io.github.nextentity.core.api.Slice;
-import io.github.nextentity.core.api.Sliceable;
-import io.github.nextentity.core.api.tuple.Tuple;
-import io.github.nextentity.core.api.tuple.Tuple10;
-import io.github.nextentity.core.api.tuple.Tuple2;
-import io.github.nextentity.core.api.tuple.Tuple3;
-import io.github.nextentity.core.api.tuple.Tuple4;
-import io.github.nextentity.core.api.tuple.Tuple5;
-import io.github.nextentity.core.api.tuple.Tuple6;
-import io.github.nextentity.core.api.tuple.Tuple7;
-import io.github.nextentity.core.api.tuple.Tuple8;
-import io.github.nextentity.core.api.tuple.Tuple9;
+import io.github.nextentity.api.EntityRoot;
+import io.github.nextentity.api.Repository;
+import io.github.nextentity.api.TypedExpression;
+import io.github.nextentity.api.TypedExpression.BooleanPathExpression;
+import io.github.nextentity.api.TypedExpression.EntityPathExpression;
+import io.github.nextentity.api.TypedExpression.NumberPathExpression;
+import io.github.nextentity.api.TypedExpression.PathExpression;
+import io.github.nextentity.api.TypedExpression.StringPathExpression;
+import io.github.nextentity.api.ExpressionBuilder.NumberOperator;
+import io.github.nextentity.api.ExpressionBuilder.PathOperator;
+import io.github.nextentity.api.ExpressionBuilder.StringOperator;
+import io.github.nextentity.api.LockModeType;
+import io.github.nextentity.api.Order;
+import io.github.nextentity.api.Page;
+import io.github.nextentity.api.Pageable;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Path.BooleanPath;
+import io.github.nextentity.api.Path.NumberPath;
+import io.github.nextentity.api.Path.StringPath;
+import io.github.nextentity.api.Query.Collector;
+import io.github.nextentity.api.Query.ExpressionsBuilder;
+import io.github.nextentity.api.Query.OrderOperator;
+import io.github.nextentity.api.Query.PredicateBuilder;
+import io.github.nextentity.api.Query.SubQueryBuilder;
+import io.github.nextentity.api.Query.Where;
+import io.github.nextentity.api.Query.Where0;
+import io.github.nextentity.api.Slice;
+import io.github.nextentity.api.Sliceable;
+import io.github.nextentity.api.tuple.Tuple;
+import io.github.nextentity.api.tuple.Tuple10;
+import io.github.nextentity.api.tuple.Tuple2;
+import io.github.nextentity.api.tuple.Tuple3;
+import io.github.nextentity.api.tuple.Tuple4;
+import io.github.nextentity.api.tuple.Tuple5;
+import io.github.nextentity.api.tuple.Tuple6;
+import io.github.nextentity.api.tuple.Tuple7;
+import io.github.nextentity.api.tuple.Tuple8;
+import io.github.nextentity.api.tuple.Tuple9;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -99,7 +100,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public <U> Expression<T, U> literal(U value) {
+    public <U> TypedExpression<T, U> literal(U value) {
         return target.literal(value);
     }
 
@@ -154,7 +155,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public Where0<T, Tuple> select(List<? extends Expression<T, ?>> paths) {
+    public Where0<T, Tuple> select(List<? extends TypedExpression<T, ?>> paths) {
         return target.select(paths);
     }
 
@@ -164,7 +165,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public <R> Where0<T, R> select(Expression<T, R> expression) {
+    public <R> Where0<T, R> select(TypedExpression<T, R> expression) {
         return target.select(expression);
     }
 
@@ -224,47 +225,47 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public <A, B> Where0<T, Tuple2<A, B>> select(Expression<T, A> a, Expression<T, B> b) {
+    public <A, B> Where0<T, Tuple2<A, B>> select(TypedExpression<T, A> a, TypedExpression<T, B> b) {
         return target.select(a, b);
     }
 
     @Override
-    public <A, B, C> Where0<T, Tuple3<A, B, C>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c) {
+    public <A, B, C> Where0<T, Tuple3<A, B, C>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c) {
         return target.select(a, b, c);
     }
 
     @Override
-    public <A, B, C, D> Where0<T, Tuple4<A, B, C, D>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d) {
+    public <A, B, C, D> Where0<T, Tuple4<A, B, C, D>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d) {
         return target.select(a, b, c, d);
     }
 
     @Override
-    public <A, B, C, D, E> Where0<T, Tuple5<A, B, C, D, E>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e) {
+    public <A, B, C, D, E> Where0<T, Tuple5<A, B, C, D, E>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e) {
         return target.select(a, b, c, d, e);
     }
 
     @Override
-    public <A, B, C, D, E, F> Where0<T, Tuple6<A, B, C, D, E, F>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f) {
+    public <A, B, C, D, E, F> Where0<T, Tuple6<A, B, C, D, E, F>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f) {
         return target.select(a, b, c, d, e, f);
     }
 
     @Override
-    public <A, B, C, D, E, F, G> Where0<T, Tuple7<A, B, C, D, E, F, G>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g) {
+    public <A, B, C, D, E, F, G> Where0<T, Tuple7<A, B, C, D, E, F, G>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g) {
         return target.select(a, b, c, d, e, f, g);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H> Where0<T, Tuple8<A, B, C, D, E, F, G, H>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h) {
+    public <A, B, C, D, E, F, G, H> Where0<T, Tuple8<A, B, C, D, E, F, G, H>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h) {
         return target.select(a, b, c, d, e, f, g, h);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H, I> Where0<T, Tuple9<A, B, C, D, E, F, G, H, I>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h, Expression<T, I> i) {
+    public <A, B, C, D, E, F, G, H, I> Where0<T, Tuple9<A, B, C, D, E, F, G, H, I>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h, TypedExpression<T, I> i) {
         return target.select(a, b, c, d, e, f, g, h, i);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H, I, J> Where0<T, Tuple10<A, B, C, D, E, F, G, H, I, J>> select(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h, Expression<T, I> i, Expression<T, J> j) {
+    public <A, B, C, D, E, F, G, H, I, J> Where0<T, Tuple10<A, B, C, D, E, F, G, H, I, J>> select(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h, TypedExpression<T, I> i, TypedExpression<T, J> j) {
         return target.select(a, b, c, d, e, f, g, h, i, j);
     }
 
@@ -274,7 +275,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public Where0<T, Tuple> selectDistinct(List<? extends Expression<T, ?>> paths) {
+    public Where0<T, Tuple> selectDistinct(List<? extends TypedExpression<T, ?>> paths) {
         return target.selectDistinct(paths);
     }
 
@@ -284,7 +285,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public <R> Where0<T, R> selectDistinct(Expression<T, R> expression) {
+    public <R> Where0<T, R> selectDistinct(TypedExpression<T, R> expression) {
         return target.selectDistinct(expression);
     }
 
@@ -344,47 +345,47 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public <A, B> Where0<T, Tuple2<A, B>> selectDistinct(Expression<T, A> a, Expression<T, B> b) {
+    public <A, B> Where0<T, Tuple2<A, B>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b) {
         return target.selectDistinct(a, b);
     }
 
     @Override
-    public <A, B, C> Where0<T, Tuple3<A, B, C>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c) {
+    public <A, B, C> Where0<T, Tuple3<A, B, C>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c) {
         return target.selectDistinct(a, b, c);
     }
 
     @Override
-    public <A, B, C, D> Where0<T, Tuple4<A, B, C, D>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d) {
+    public <A, B, C, D> Where0<T, Tuple4<A, B, C, D>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d) {
         return target.selectDistinct(a, b, c, d);
     }
 
     @Override
-    public <A, B, C, D, E> Where0<T, Tuple5<A, B, C, D, E>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e) {
+    public <A, B, C, D, E> Where0<T, Tuple5<A, B, C, D, E>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e) {
         return target.selectDistinct(a, b, c, d, e);
     }
 
     @Override
-    public <A, B, C, D, E, F> Where0<T, Tuple6<A, B, C, D, E, F>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f) {
+    public <A, B, C, D, E, F> Where0<T, Tuple6<A, B, C, D, E, F>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f) {
         return target.selectDistinct(a, b, c, d, e, f);
     }
 
     @Override
-    public <A, B, C, D, E, F, G> Where0<T, Tuple7<A, B, C, D, E, F, G>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g) {
+    public <A, B, C, D, E, F, G> Where0<T, Tuple7<A, B, C, D, E, F, G>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g) {
         return target.selectDistinct(a, b, c, d, e, f, g);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H> Where0<T, Tuple8<A, B, C, D, E, F, G, H>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h) {
+    public <A, B, C, D, E, F, G, H> Where0<T, Tuple8<A, B, C, D, E, F, G, H>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h) {
         return target.selectDistinct(a, b, c, d, e, f, g, h);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H, I> Where0<T, Tuple9<A, B, C, D, E, F, G, H, I>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h, Expression<T, I> i) {
+    public <A, B, C, D, E, F, G, H, I> Where0<T, Tuple9<A, B, C, D, E, F, G, H, I>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h, TypedExpression<T, I> i) {
         return target.selectDistinct(a, b, c, d, e, f, g, h, i);
     }
 
     @Override
-    public <A, B, C, D, E, F, G, H, I, J> Where0<T, Tuple10<A, B, C, D, E, F, G, H, I, J>> selectDistinct(Expression<T, A> a, Expression<T, B> b, Expression<T, C> c, Expression<T, D> d, Expression<T, E> e, Expression<T, F> f, Expression<T, G> g, Expression<T, H> h, Expression<T, I> i, Expression<T, J> j) {
+    public <A, B, C, D, E, F, G, H, I, J> Where0<T, Tuple10<A, B, C, D, E, F, G, H, I, J>> selectDistinct(TypedExpression<T, A> a, TypedExpression<T, B> b, TypedExpression<T, C> c, TypedExpression<T, D> d, TypedExpression<T, E> e, TypedExpression<T, F> f, TypedExpression<T, G> g, TypedExpression<T, H> h, TypedExpression<T, I> i, TypedExpression<T, J> j) {
         return target.selectDistinct(a, b, c, d, e, f, g, h, i, j);
     }
 
@@ -429,7 +430,7 @@ public class RepositoryFaced<ID extends Serializable, T> implements Repository<I
     }
 
     @Override
-    public Where<T, T> where(Expression<T, Boolean> predicate) {
+    public Where<T, T> where(TypedExpression<T, Boolean> predicate) {
         return target.where(predicate);
     }
 

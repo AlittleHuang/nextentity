@@ -1,9 +1,12 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression.OperatableExpression;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Update;
+import io.github.nextentity.api.EntityRoot;
+import io.github.nextentity.api.Repository;
+import io.github.nextentity.api.TypedExpression.OperatableExpression;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Update;
+import io.github.nextentity.core.expression.impl.InternalExpressions;
+import io.github.nextentity.core.expression.impl.Expressions;
 import io.github.nextentity.core.meta.BasicAttribute;
 import io.github.nextentity.core.util.Iterators;
 import io.github.nextentity.core.util.Paths;
@@ -53,7 +56,7 @@ public class RepositoryImpl<ID extends Serializable, T> extends SelectImpl<T> im
         update = Updaters.create(entitiesFactory.getUpdateExecutor(), entityType);
         BasicAttribute idAttribute = entitiesFactory.getMetamodel().getEntity(entityType).id();
         getId = entity -> TypeCastUtil.unsafeCast(idAttribute.get(entity));
-        idExpression = Expressions.of(BasicExpressions.column(idAttribute.name()));
+        idExpression = Expressions.of(InternalExpressions.column(idAttribute.name()));
     }
 
     public T get(ID id) {

@@ -1,19 +1,19 @@
 package io.github.nextentity.test;
 
-import io.github.nextentity.core.Expressions;
+import io.github.nextentity.core.expression.impl.Expressions;
 import io.github.nextentity.core.Tuples;
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression;
-import io.github.nextentity.core.api.Expression.Predicate;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Query;
-import io.github.nextentity.core.api.Query.ExpressionsBuilder;
-import io.github.nextentity.core.api.Query.OrderBy;
-import io.github.nextentity.core.api.Query.Where;
-import io.github.nextentity.core.api.Slice;
-import io.github.nextentity.core.api.tuple.Tuple;
-import io.github.nextentity.core.api.tuple.Tuple2;
+import io.github.nextentity.api.EntityRoot;
+import io.github.nextentity.api.TypedExpression;
+import io.github.nextentity.api.TypedExpression.Predicate;
+import io.github.nextentity.api.LockModeType;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Query;
+import io.github.nextentity.api.Query.ExpressionsBuilder;
+import io.github.nextentity.api.Query.OrderBy;
+import io.github.nextentity.api.Query.Where;
+import io.github.nextentity.api.Slice;
+import io.github.nextentity.api.tuple.Tuple;
+import io.github.nextentity.api.tuple.Tuple2;
 import io.github.nextentity.core.util.ImmutableList;
 import io.github.nextentity.core.util.Paths;
 import io.github.nextentity.test.db.UserRepository;
@@ -1238,8 +1238,8 @@ class QueryBuilderTest {
             collector = check.collector.where(get(User::getRandomNumber).in(values));
             result.add(new Checker<>(users, collector));
 
-            List<Expression<User, Integer>> collect = values.stream()
-                    .<Expression<User, Integer>>map(Expressions::of)
+            List<TypedExpression<User, Integer>> collect = values.stream()
+                    .<TypedExpression<User, Integer>>map(Expressions::of)
                     .collect(Collectors.toList());
             collector = check.collector.where(User::getRandomNumber).in(collect);
             result.add(new Checker<>(users, collector));

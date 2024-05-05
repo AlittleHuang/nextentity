@@ -1,31 +1,33 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.BasicExpressions.QueryStructureImpl;
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression;
-import io.github.nextentity.core.api.Expression.OperatableExpression;
-import io.github.nextentity.core.api.ExpressionBuilder.NumberOperator;
-import io.github.nextentity.core.api.ExpressionBuilder.PathOperator;
-import io.github.nextentity.core.api.ExpressionBuilder.StringOperator;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.Operator;
-import io.github.nextentity.core.api.Order;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Path.NumberPath;
-import io.github.nextentity.core.api.Path.StringPath;
-import io.github.nextentity.core.api.Query.Collector;
-import io.github.nextentity.core.api.Query.ExpressionsBuilder;
-import io.github.nextentity.core.api.Query.Having;
-import io.github.nextentity.core.api.Query.OrderBy;
-import io.github.nextentity.core.api.Query.OrderOperator;
-import io.github.nextentity.core.api.Query.SubQueryBuilder;
-import io.github.nextentity.core.api.Query.Where0;
-import io.github.nextentity.core.api.expression.BaseExpression;
-import io.github.nextentity.core.api.expression.Operation;
-import io.github.nextentity.core.api.expression.QueryStructure;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected.SelectArray;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected.SelectPrimitive;
+import io.github.nextentity.api.EntityRoot;
+import io.github.nextentity.api.Expression;
+import io.github.nextentity.api.ExpressionBuilder.NumberOperator;
+import io.github.nextentity.api.ExpressionBuilder.PathOperator;
+import io.github.nextentity.api.ExpressionBuilder.StringOperator;
+import io.github.nextentity.api.LockModeType;
+import io.github.nextentity.api.Operator;
+import io.github.nextentity.api.Order;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Path.NumberPath;
+import io.github.nextentity.api.Path.StringPath;
+import io.github.nextentity.api.Query.Collector;
+import io.github.nextentity.api.Query.ExpressionsBuilder;
+import io.github.nextentity.api.Query.Having;
+import io.github.nextentity.api.Query.OrderBy;
+import io.github.nextentity.api.Query.OrderOperator;
+import io.github.nextentity.api.Query.SubQueryBuilder;
+import io.github.nextentity.api.Query.Where0;
+import io.github.nextentity.api.TypedExpression;
+import io.github.nextentity.api.TypedExpression.OperatableExpression;
+import io.github.nextentity.core.expression.Operation;
+import io.github.nextentity.core.expression.QueryStructure;
+import io.github.nextentity.core.expression.QueryStructure.Selected;
+import io.github.nextentity.core.expression.QueryStructure.Selected.SelectArray;
+import io.github.nextentity.core.expression.QueryStructure.Selected.SelectPrimitive;
+import io.github.nextentity.core.expression.impl.ExpressionBuilders;
+import io.github.nextentity.core.expression.impl.Expressions;
+import io.github.nextentity.core.expression.impl.InternalExpressions;
 import io.github.nextentity.core.util.ImmutableList;
 import io.github.nextentity.core.util.Paths;
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +39,12 @@ import java.util.function.Function;
 @SuppressWarnings("PatternVariableCanBeUsed")
 public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractCollector<U> {
 
-    static final Selected SELECT_ANY = new SelectPrimitive().expression(BasicExpressions.TRUE).type(Boolean.class);
+    static final Selected SELECT_ANY = new SelectPrimitive().expression(InternalExpressions.TRUE).type(Boolean.class);
     static final Selected COUNT_ANY = new SelectPrimitive()
-            .expression(BasicExpressions.operate(BasicExpressions.TRUE, Operator.COUNT)).type(Long.class);
+            .expression(InternalExpressions.operate(InternalExpressions.TRUE, Operator.COUNT)).type(Long.class);
 
     QueryExecutor queryExecutor;
-    QueryStructureImpl queryStructure;
+    QueryStructure queryStructure;
     QueryPostProcessor structurePostProcessor;
 
     public WhereImpl(QueryExecutor queryExecutor, Class<T> type, QueryPostProcessor structurePostProcessor) {
@@ -50,15 +52,15 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
 
-    WhereImpl(QueryExecutor queryExecutor, QueryStructureImpl queryStructure, QueryPostProcessor structurePostProcessor) {
+    WhereImpl(QueryExecutor queryExecutor, QueryStructure queryStructure, QueryPostProcessor structurePostProcessor) {
         init(queryExecutor, queryStructure, structurePostProcessor);
     }
 
     protected void init(Class<T> type, QueryExecutor queryExecutor, QueryPostProcessor structurePostProcessor) {
-        init(queryExecutor, new QueryStructureImpl(queryExecutor.metamodel().getEntity(type)), structurePostProcessor);
+        init(queryExecutor, InternalExpressions.queryStructure(queryExecutor.metamodel().getEntity(type)), structurePostProcessor);
     }
 
-    private void init(QueryExecutor queryExecutor, QueryStructureImpl queryStructure, QueryPostProcessor structurePostProcessor) {
+    private void init(QueryExecutor queryExecutor, QueryStructure queryStructure, QueryPostProcessor structurePostProcessor) {
         this.queryExecutor = queryExecutor;
         this.queryStructure = queryStructure;
         this.structurePostProcessor = structurePostProcessor == null ? QueryPostProcessor.NONE : structurePostProcessor;
@@ -67,26 +69,27 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     public WhereImpl() {
     }
 
-    <X, Y> WhereImpl<X, Y> update(QueryStructureImpl queryStructure) {
+    <X, Y> WhereImpl<X, Y> update(QueryStructure queryStructure) {
         return new WhereImpl<>(queryExecutor, queryStructure, structurePostProcessor);
     }
 
     @Override
-    public Where0<T, U> where(Expression<T, Boolean> predicate) {
-        if (BasicExpressions.isNullOrTrue(predicate)) {
+    public Where0<T, U> where(TypedExpression<T, Boolean> predicate) {
+        if (InternalExpressions.isNullOrTrue(predicate)) {
             return this;
         }
-        QueryStructureImpl structure = queryStructure.copy();
-        whereAnd(structure, predicate);
+        QueryStructure structure = whereAnd(queryStructure, predicate);
         return update(structure);
     }
 
-    static void whereAnd(QueryStructureImpl structure, BaseExpression expression) {
-        if (BasicExpressions.isNullOrTrue(structure.where)) {
-            structure.where = expression;
+    static QueryStructure whereAnd(QueryStructure structure, Expression expression) {
+        Expression where;
+        if (InternalExpressions.isNullOrTrue(structure.where())) {
+            where = expression;
         } else {
-            structure.where = BasicExpressions.operate(structure.where, Operator.AND, expression);
+            where = InternalExpressions.operate(structure.where(), Operator.AND, expression);
         }
+        return InternalExpressions.where(structure, where);
     }
 
     @Override
@@ -105,8 +108,19 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
     WhereImpl<T, U> addOrderBy(List<? extends Order<T>> orders) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.orderBy = structure.orderBy == null ? orders : ImmutableList.concat(structure.orderBy, orders);
+        List<? extends Order<?>> orderBy = queryStructure.orderBy();
+        orderBy = orderBy == null ? orders : ImmutableList.concat(orderBy, orders);
+        QueryStructure structure = InternalExpressions.queryStructure(
+                queryStructure.select(),
+                queryStructure.from(),
+                queryStructure.where(),
+                queryStructure.groupBy(),
+                orderBy,
+                queryStructure.having(),
+                queryStructure.offset(),
+                queryStructure.limit(),
+                queryStructure.lockType()
+        );
         return update(structure);
     }
 
@@ -118,23 +132,45 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
     @NotNull
-    BasicExpressions.QueryStructureImpl buildCountData() {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.lockType = LockModeType.NONE;
-        structure.orderBy = ImmutableList.of();
+    QueryStructure buildCountData() {
+        QueryStructure.From from = queryStructure.from();
+        Expression where = queryStructure.where();
         if (queryStructure.select().distinct()) {
-            return new QueryStructureImpl(COUNT_ANY, structure);
+            return countFrom(queryStructure.select());
         } else if (requiredCountSubQuery(queryStructure.select())) {
-            structure.select = COUNT_ANY;
-            return new QueryStructureImpl(COUNT_ANY, structure);
+            return countFrom(COUNT_ANY);
         } else if (queryStructure.groupBy() != null && !queryStructure.groupBy().isEmpty()) {
-            structure.select = SELECT_ANY;
-            return new QueryStructureImpl(COUNT_ANY, structure);
+            return countFrom(SELECT_ANY);
         } else {
-            structure.select = COUNT_ANY;
-            return structure;
+            return InternalExpressions.queryStructure(
+                    COUNT_ANY,
+                    queryStructure.from(),
+                    queryStructure.where(),
+                    queryStructure.groupBy(),
+                    ImmutableList.of(),
+                    queryStructure.having(),
+                    null,
+                    null,
+                    LockModeType.NONE);
         }
+
     }
+
+
+    public QueryStructure countFrom(Selected selected) {
+        QueryStructure.From from = InternalExpressions.from(InternalExpressions.queryStructure(
+                selected,
+                queryStructure.from(),
+                queryStructure.where(),
+                queryStructure.groupBy(),
+                ImmutableList.of(),
+                queryStructure.having(),
+                null,
+                null,
+                LockModeType.NONE));
+        return InternalExpressions.queryStructure(COUNT_ANY, from);
+    }
+
 
     boolean requiredCountSubQuery(Selected select) {
         if (select instanceof SelectPrimitive) {
@@ -150,15 +186,15 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
         return false;
     }
 
-    protected boolean requiredCountSubQuery(BaseExpression expression) {
+    protected boolean requiredCountSubQuery(Expression expression) {
         if (expression instanceof Operation) {
             Operation operation = (Operation) expression;
             if (operation.operator().isAgg()) {
                 return true;
             }
-            List<? extends BaseExpression> args = operation.operands();
+            List<? extends Expression> args = operation.operands();
             if (args != null) {
-                for (BaseExpression arg : args) {
+                for (Expression arg : args) {
                     if (requiredCountSubQuery(arg)) {
                         return true;
                     }
@@ -180,12 +216,18 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
     @NotNull
-    BasicExpressions.QueryStructureImpl buildListData(int offset, int maxResult, LockModeType lockModeType) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.offset = offset;
-        structure.limit = maxResult;
-        structure.lockType = lockModeType;
-        return structure;
+    QueryStructure buildListData(int offset, int maxResult, LockModeType lockModeType) {
+        return InternalExpressions.queryStructure(
+                queryStructure.select(),
+                queryStructure.from(),
+                queryStructure.where(),
+                queryStructure.groupBy(),
+                queryStructure.orderBy(),
+                queryStructure.having(),
+                offset,
+                maxResult,
+                lockModeType
+        );
     }
 
     @Override
@@ -196,13 +238,18 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
     @NotNull
-    BasicExpressions.QueryStructureImpl buildExistData(int offset) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.select = SELECT_ANY;
-        structure.offset = offset;
-        structure.limit = 1;
-        structure.orderBy = ImmutableList.of();
-        return structure;
+    QueryStructure buildExistData(int offset) {
+        return InternalExpressions.queryStructure(
+                SELECT_ANY,
+                queryStructure.from(),
+                queryStructure.where(),
+                queryStructure.groupBy(),
+                ImmutableList.of(),
+                queryStructure.having(),
+                offset,
+                1,
+                queryStructure.lockType()
+        );
     }
 
     @Override
@@ -211,9 +258,22 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     }
 
     @Override
-    public Having<T, U> groupBy(List<? extends Expression<T, ?>> expressions) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.groupBy = expressions;
+    public Having<T, U> groupBy(List<? extends TypedExpression<T, ?>> expressions) {
+        return setGroupBy(expressions);
+    }
+
+    private WhereImpl<T, U> setGroupBy(List<? extends Expression> group) {
+        QueryStructure structure = InternalExpressions.queryStructure(
+                queryStructure.select(),
+                queryStructure.from(),
+                queryStructure.where(),
+                group,
+                queryStructure.orderBy(),
+                queryStructure.having(),
+                queryStructure.offset(),
+                queryStructure.limit(),
+                queryStructure.lockType()
+        );
         return update(structure);
     }
 
@@ -224,20 +284,27 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
 
     @Override
     public Having<T, U> groupBy(Path<T, ?> path) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.groupBy = ImmutableList.of(BasicExpressions.of(path));
-        return update(structure);
+        return setGroupBy(ImmutableList.of(InternalExpressions.of(path)));
     }
 
     @Override
     public Having<T, U> groupBy(Collection<Path<T, ?>> paths) {
-        return groupBy(BasicExpressions.toExpressionList(paths));
+        return groupBy(InternalExpressions.toExpressionList(paths));
     }
 
     @Override
-    public OrderBy<T, U> having(Expression<T, Boolean> predicate) {
-        QueryStructureImpl structure = queryStructure.copy();
-        structure.having = predicate;
+    public OrderBy<T, U> having(TypedExpression<T, Boolean> predicate) {
+        QueryStructure structure = InternalExpressions.queryStructure(
+                queryStructure.select(),
+                queryStructure.from(),
+                queryStructure.where(),
+                queryStructure.groupBy(),
+                queryStructure.orderBy(),
+                predicate,
+                queryStructure.offset(),
+                queryStructure.limit(),
+                queryStructure.lockType()
+        );
         return update(structure);
     }
 
@@ -251,8 +318,7 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
         if (expression == null) {
             return this;
         }
-        QueryStructureImpl structure = queryStructure.copy();
-        whereAnd(structure, expression);
+        QueryStructure structure = whereAnd(queryStructure, expression);
         return update(structure);
     }
 
@@ -274,25 +340,25 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
     class SubQuery<X> implements SubQueryBuilder<X, U>, QueryStructure {
 
         @Override
-        public Expression<X, Long> count() {
+        public TypedExpression<X, Long> count() {
             QueryStructure structure = buildCountData();
             return Expressions.of(structure);
         }
 
         @Override
-        public Expression<X, List<U>> slice(int offset, int maxResult) {
+        public TypedExpression<X, List<U>> slice(int offset, int maxResult) {
             QueryStructure structure = buildListData(offset, maxResult, null);
             return Expressions.of(structure);
         }
 
         @Override
-        public Expression<X, U> getSingle(int offset) {
+        public TypedExpression<X, U> getSingle(int offset) {
             QueryStructure structure = buildListData(offset, 2, null);
             return Expressions.of(structure);
         }
 
         @Override
-        public Expression<X, U> getFirst(int offset) {
+        public TypedExpression<X, U> getFirst(int offset) {
             QueryStructure structure = buildListData(offset, 1, null);
             return Expressions.of(structure);
         }
@@ -309,7 +375,7 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
             return queryStructure.offset();
         }
 
-        public BaseExpression having() {
+        public Expression having() {
             return queryStructure.having();
         }
 
@@ -317,11 +383,11 @@ public class WhereImpl<T, U> implements Where0<T, U>, Having<T, U>, AbstractColl
             return queryStructure.orderBy();
         }
 
-        public List<? extends BaseExpression> groupBy() {
+        public List<? extends Expression> groupBy() {
             return queryStructure.groupBy();
         }
 
-        public BaseExpression where() {
+        public Expression where() {
             return queryStructure.where();
         }
 

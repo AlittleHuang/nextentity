@@ -1,6 +1,6 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.api.Update;
+import io.github.nextentity.api.Update;
 import io.github.nextentity.core.util.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 

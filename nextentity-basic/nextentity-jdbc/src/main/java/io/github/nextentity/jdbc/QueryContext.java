@@ -1,14 +1,14 @@
 package io.github.nextentity.jdbc;
 
 import io.github.nextentity.core.ExpressionTypeResolver;
-import io.github.nextentity.core.api.expression.BaseExpression;
-import io.github.nextentity.core.api.expression.EntityPath;
-import io.github.nextentity.core.api.expression.QueryStructure;
-import io.github.nextentity.core.api.expression.QueryStructure.From;
-import io.github.nextentity.core.api.expression.QueryStructure.From.Entity;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected.SelectEntity;
-import io.github.nextentity.core.api.expression.QueryStructure.Selected.SelectProjection;
+import io.github.nextentity.api.Expression;
+import io.github.nextentity.core.expression.EntityPath;
+import io.github.nextentity.core.expression.QueryStructure;
+import io.github.nextentity.core.expression.QueryStructure.From;
+import io.github.nextentity.core.expression.QueryStructure.From.Entity;
+import io.github.nextentity.core.expression.QueryStructure.Selected;
+import io.github.nextentity.core.expression.QueryStructure.Selected.SelectEntity;
+import io.github.nextentity.core.expression.QueryStructure.Selected.SelectProjection;
 import io.github.nextentity.core.meta.AssociationAttribute;
 import io.github.nextentity.core.meta.BasicAttribute;
 import io.github.nextentity.core.meta.EntityType;
@@ -67,7 +67,7 @@ public class QueryContext {
     }
 
     private InstanceFactory newPrimitiveFactory(Selected.SelectPrimitive select) {
-        BaseExpression expression = select.expression();
+        Expression expression = select.expression();
         if (expression instanceof EntityPath entityPath) {
             BasicAttribute attribute = entityType.getAttribute(entityPath);
             if (expandReferencePath && attribute.isObject()) {

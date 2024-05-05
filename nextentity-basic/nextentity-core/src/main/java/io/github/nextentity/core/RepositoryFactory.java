@@ -1,8 +1,9 @@
 package io.github.nextentity.core;
 
+import io.github.nextentity.api.Repository;
 import io.github.nextentity.core.Updaters.UpdateExecutor;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Query;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Query;
 import io.github.nextentity.core.meta.Metamodel;
 import lombok.Getter;
 

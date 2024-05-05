@@ -1,13 +1,13 @@
 package io.github.nextentity.core;
 
-import io.github.nextentity.core.BasicExpressions.SliceImpl;
-import io.github.nextentity.core.api.LockModeType;
-import io.github.nextentity.core.api.Page;
-import io.github.nextentity.core.api.Pageable;
-import io.github.nextentity.core.api.Query.Collector;
-import io.github.nextentity.core.api.Query.SubQueryBuilder;
-import io.github.nextentity.core.api.Slice;
-import io.github.nextentity.core.api.Sliceable;
+import io.github.nextentity.core.expression.impl.InternalExpressions.SliceImpl;
+import io.github.nextentity.api.LockModeType;
+import io.github.nextentity.api.Page;
+import io.github.nextentity.api.Pageable;
+import io.github.nextentity.api.Query.Collector;
+import io.github.nextentity.api.Query.SubQueryBuilder;
+import io.github.nextentity.api.Slice;
+import io.github.nextentity.api.Sliceable;
 import io.github.nextentity.core.util.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 

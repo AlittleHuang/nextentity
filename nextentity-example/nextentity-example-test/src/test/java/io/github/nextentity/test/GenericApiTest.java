@@ -2,16 +2,16 @@ package io.github.nextentity.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.nextentity.core.Tuples;
-import io.github.nextentity.core.api.EntityRoot;
-import io.github.nextentity.core.api.Expression;
-import io.github.nextentity.core.api.Expression.NumberPathExpression;
-import io.github.nextentity.core.api.Expression.Predicate;
-import io.github.nextentity.core.api.ExpressionBuilder.Conjunction;
-import io.github.nextentity.core.api.Path;
-import io.github.nextentity.core.api.Slice;
-import io.github.nextentity.core.api.tuple.Tuple;
-import io.github.nextentity.core.api.tuple.Tuple2;
-import io.github.nextentity.core.api.tuple.Tuple3;
+import io.github.nextentity.api.EntityRoot;
+import io.github.nextentity.api.TypedExpression;
+import io.github.nextentity.api.TypedExpression.NumberPathExpression;
+import io.github.nextentity.api.TypedExpression.Predicate;
+import io.github.nextentity.api.ExpressionBuilder.Conjunction;
+import io.github.nextentity.api.Path;
+import io.github.nextentity.api.Slice;
+import io.github.nextentity.api.tuple.Tuple;
+import io.github.nextentity.api.tuple.Tuple2;
+import io.github.nextentity.api.tuple.Tuple3;
 import io.github.nextentity.core.meta.BasicAttribute;
 import io.github.nextentity.core.meta.Metamodel;
 import io.github.nextentity.core.meta.ProjectionType;
@@ -340,7 +340,7 @@ public class GenericApiTest {
     @ArgumentsSource(UserQueryProvider.class)
     public void testAggregateFunction(UserRepository userQuery) {
 
-        List<Expression<User, ?>> selected = Arrays.asList(
+        List<TypedExpression<User, ?>> selected = Arrays.asList(
                 get(User::getRandomNumber).min(),
                 get(User::getRandomNumber).max(),
                 get(User::getRandomNumber).count(),
@@ -1134,7 +1134,7 @@ public class GenericApiTest {
 
         Date time = userQuery.users().get(20).getTime();
 
-        Expression<User, Boolean> or = get(User::isValid).eq(true)
+        TypedExpression<User, Boolean> or = get(User::isValid).eq(true)
                 .or(
                         Paths.get(User::getParentUser)
                                 .get(User::getUsername)
@@ -1742,7 +1742,7 @@ public class GenericApiTest {
     @ParameterizedTest
     @ArgumentsSource(UserQueryProvider.class)
     public void subQueryTest(UserRepository userQuery) {
-        Expression<User, List<Integer>> ids = userQuery
+        TypedExpression<User, List<Integer>> ids = userQuery
                 .select(User::getId).where(User::getId)
                 .in(1, 2, 3)
                 .asSubQuery();
