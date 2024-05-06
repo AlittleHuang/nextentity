@@ -1,5 +1,7 @@
 package io.github.nextentity.test.projection;
 
+import lombok.Data;
+
 public interface IUser {
 
     int getId();
@@ -10,7 +12,12 @@ public interface IUser {
 
     U getParentUser();
 
-    record U(int id, int randomNumber, String username, U parentUser) {
+
+    @Data
+    class U {
+        int id;
+        int randomNumber;
+        String username;
     }
 
 }

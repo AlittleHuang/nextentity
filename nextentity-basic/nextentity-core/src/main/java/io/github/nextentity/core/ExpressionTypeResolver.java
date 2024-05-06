@@ -52,7 +52,6 @@ public class ExpressionTypeResolver {
 
     public static Class<?> getOperationType(Operation expression, EntityType entityType) {
         Operator operator = expression.operator();
-        // noinspection EnhancedSwitchMigration
         switch (operator) {
             case NOT:
             case AND:

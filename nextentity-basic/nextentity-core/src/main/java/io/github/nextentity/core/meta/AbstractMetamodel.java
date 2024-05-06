@@ -28,7 +28,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,17 +87,8 @@ public abstract class AbstractMetamodel implements Metamodel {
     private List<Attribute> getProjectionAttributes(Class<?> projectionType, Schema owner) {
         if (projectionType.isInterface()) {
             return getInterfaceAttributes(projectionType, owner);
-        } else if (projectionType.isRecord()) {
-            return getRecordAttributes(projectionType, owner);
         }
         return getBeanAttributes(projectionType, owner);
-    }
-
-    private List<Attribute> getRecordAttributes(Class<?> projectionType, Schema owner) {
-        RecordComponent[] components = projectionType.getRecordComponents();
-        return Arrays.stream(components)
-                .map(it -> newAttribute(null, it.getAccessor(), null, owner))
-                .collect(ImmutableList.collector(components.length));
     }
 
     protected BasicAttribute getEntityAttribute(Attribute attribute, EntitySchema entity) {
@@ -236,7 +226,8 @@ public abstract class AbstractMetamodel implements Metamodel {
     protected void setAnyToOneAttributeColumnName(Map<String, BasicAttribute> map) {
         for (Entry<String, BasicAttribute> entry : map.entrySet()) {
             BasicAttribute value = entry.getValue();
-            if (value instanceof AssociationAttributeImpl attr) {
+            if (value instanceof AssociationAttributeImpl) {
+                AssociationAttributeImpl attr = (AssociationAttributeImpl) value;
                 String joinColumnName = getJoinColumnName(map, attr);
                 attr.columnName(joinColumnName);
             }

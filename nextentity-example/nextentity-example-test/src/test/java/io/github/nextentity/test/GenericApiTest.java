@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -280,7 +281,7 @@ public class GenericApiTest {
         User u = userQuery.users().stream()
                 .filter(it -> it.getId() == userId)
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("No value present"));
 
         if (user.getPid() != null) {
             User parentUser = user.getParentUser();
@@ -352,8 +353,8 @@ public class GenericApiTest {
                 .requireSingle();
 
         assertNotNull(aggregated);
-        assertEquals(getUserIdStream(userQuery).min().orElseThrow(), aggregated.<Integer>get(0));
-        assertEquals(getUserIdStream(userQuery).max().orElseThrow(), aggregated.<Integer>get(1));
+        assertEquals(getUserIdStream(userQuery).min().orElseThrow(() -> new NoSuchElementException("No value present")), aggregated.<Integer>get(0));
+        assertEquals(getUserIdStream(userQuery).max().orElseThrow(() -> new NoSuchElementException("No value present")), aggregated.<Integer>get(1));
         assertEquals(getUserIdStream(userQuery).count(), aggregated.<Long>get(2));
         OptionalDouble average = getUserIdStream(userQuery).average();
         assertEquals(average.orElse(0), aggregated.<Number>get(3).doubleValue(), 1);

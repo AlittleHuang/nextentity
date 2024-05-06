@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class Iterators {
 
     public static <T> List<T> toList(Iterable<T> iterable) {
-        if (iterable instanceof List<T>) {
+        if (iterable instanceof List<?>) {
             return (List<T>) iterable;
         } else {
             return ImmutableList.ofIterable(iterable);

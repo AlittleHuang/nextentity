@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.lang.reflect.RecordComponent;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -134,14 +132,12 @@ public class InstanceFactories {
     }
 
     static abstract class AbstractObjectFactory implements InstanceFactory.ObjectFactory {
-        private Function<Iterator<?>, Object> factory;
+        private final Function<Iterator<?>, Object> factory;
         private final Class<?> type;
 
         public AbstractObjectFactory(Class<?> type) {
             this.type = type;
-            if (type.isRecord()) {
-                factory = new RecordFactoryInitializer();
-            } else if (type.isInterface()) {
+            if (type.isInterface()) {
                 factory = new InterfaceFactory();
             } else {
                 factory = new ObjectFactory();
@@ -198,74 +194,6 @@ public class InstanceFactories {
                 }
             }
         }
-
-        class RecordFactoryInitializer implements Function<Iterator<?>, Object> {
-            @Override
-            public synchronized Object apply(Iterator<?> iterator) {
-                if (factory == this) {
-                    factory = new RecordFactory();
-                }
-                return factory.apply(iterator);
-            }
-        }
-
-        class RecordFactory implements Function<Iterator<?>, Object> {
-            private final int[] attributePositions;
-            private final Constructor<?> constructor;
-            private final int constructorArgumentsLength;
-
-            public RecordFactory() {
-                RecordComponent[] components = type().getRecordComponents();
-                constructorArgumentsLength = components.length;
-                Class<?>[] parameterTypes = new Class[constructorArgumentsLength];
-                Map<String, Integer> positionMap = new HashMap<>();
-                for (int i = 0; i < components.length; i++) {
-                    RecordComponent component = components[i];
-                    parameterTypes[i] = component.getType();
-                    positionMap.put(component.getName(), i);
-                }
-                try {
-                    constructor = type().getDeclaredConstructor(parameterTypes);
-                } catch (NoSuchMethodException e) {
-                    throw new UncheckedReflectiveException("no such constructor", e);
-                }
-                int cur = 0;
-                attributePositions = new int[attributes().size()];
-                Arrays.fill(attributePositions, -1);
-                for (AttributeFactory attribute : attributes()) {
-                    Integer i = positionMap.get(attribute.name());
-                    if (i != null) {
-                        attributePositions[cur++] = i;
-                    }
-                }
-            }
-
-            public Object apply(Iterator<?> arguments) {
-                Object[] args = new Object[constructorArgumentsLength];
-                boolean notNull = false;
-                List<? extends AttributeFactory> attributes = attributes();
-                for (int i = 0; i < attributes.size(); i++) {
-                    AttributeFactory attribute = attributes.get(i);
-                    Object arg = attribute.getInstance(arguments);
-                    if (arg != null) {
-                        notNull = true;
-                        int position = attributePositions[i];
-                        if (position >= 0) {
-                            args[position] = arg;
-                        }
-                    }
-                }
-                if (!notNull) {
-                    return null;
-                }
-                try {
-                    return constructor.newInstance(args);
-                } catch (ReflectiveOperationException e) {
-                    throw new UncheckedReflectiveException("new instance error", e);
-                }
-            }
-        }
-
 
     }
 

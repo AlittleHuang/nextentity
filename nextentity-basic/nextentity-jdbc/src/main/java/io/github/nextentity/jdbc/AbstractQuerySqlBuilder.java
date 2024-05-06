@@ -184,7 +184,6 @@ abstract class AbstractQuerySqlBuilder {
     }
 
     protected StringBuilder appendBlank(StringBuilder sql) {
-        // noinspection SizeReplaceableByIsEmpty
         return sql.length() == 0 || " (,+-*/%=><".indexOf(sql.charAt(sql.length() - 1)) >= 0 ? sql : sql.append(' ');
     }
 

@@ -6,12 +6,12 @@ import io.github.nextentity.jdbc.JdbcQueryExecutor.QuerySqlBuilder;
 import io.github.nextentity.jdbc.JdbcUpdateSqlBuilder;
 import io.github.nextentity.jdbc.MySqlQuerySqlBuilder;
 import io.github.nextentity.jdbc.MysqlUpdateSqlBuilder;
-import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.tool.schema.Action;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
 
@@ -50,8 +50,8 @@ public class Mysql implements DbConfigProvider {
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
         Map<String, Object> properties = Maps.<String, Object>hashmap()
-                .put(JAKARTA_JDBC_DRIVER, "com.mysql.cj.jdbc.Driver")
-                .put(JAKARTA_JDBC_URL, url)
+                .put(JPA_JDBC_DRIVER, "com.mysql.cj.jdbc.Driver")
+                .put(JPA_JDBC_URL, url)
                 .put(USER, user)
                 .put(PASS, password)
                 .put(DIALECT_RESOLVERS, StandardDialectResolver.class.getName())
